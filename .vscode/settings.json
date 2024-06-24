@@ -1,0 +1,5 @@
+{
+    "python.REPL.enableREPLSmartSend": false,
+    "jupyter.interactiveWindow.creationMode": "multiple",
+    "jupyter.interactiveWindow.textEditor.executeSelection": true
+}
