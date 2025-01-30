@@ -18,7 +18,7 @@ df = pickle.load(open(path.abspath(r'..\artifacts\target_associated_data.pkl'), 
 X_train, X_test, y_train, y_test = train_test_split(df.drop(['Approved_Flag', 'PROSPECTID'], axis=1), 
                  LabelEncoder().fit_transform(df['Approved_Flag']),
                  test_size=0.2, random_state=42)
-
+pickle.dump([X_test, y_test], open(path.abspath(r'..\artifacts\test_data.pkl'), 'wb'))
     
 rf_param_grid = {
     'n_estimators': [25, 50, 100, 150],

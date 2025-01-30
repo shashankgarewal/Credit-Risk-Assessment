@@ -69,14 +69,18 @@ class Stage2Classifier(BaseEstimator, ClassifierMixin):
     def predict(self, data, y=None):
         # Predict flag based on the predicted group
         X, y_group_preds = data
-
         y_group_preds_bool = y_group_preds.astype(bool) # True = p1_p3, False = p2_p4
-        preds_p1_p3 = self.p1_p3_model.predict(X[y_group_preds_bool])
-        preds_p2_p4 = self.p2_p4_model.predict(X[~y_group_preds_bool])
-        
-        # Combine predictions
         final_preds = np.zeros(len(y_group_preds), dtype=int)
-        final_preds[y_group_preds_bool] = np.where(np.isin(preds_p1_p3, 0), 0, 2) # P1 was 0, P3 was 1
-        final_preds[~y_group_preds_bool] = np.where(np.isin(preds_p2_p4, 0), 1, 3) # P2 was 0, P4 was 1
+        
+        try:
+            preds_p1_p3 = self.p1_p3_model.predict(X[y_group_preds_bool])
+            final_preds[y_group_preds_bool] = np.where(np.isin(preds_p1_p3, 0), 0, 2) # P1 was 0, P3 was 1
+        except:
+            print('no record of p1_p3 class')
+        try:
+            preds_p2_p4 = self.p2_p4_model.predict(X[~y_group_preds_bool])
+            final_preds[~y_group_preds_bool] = np.where(np.isin(preds_p2_p4, 0), 1, 3) # P2 was 0, P4 was 1
+        except:
+            print('no record of p2_p4 class')
         
         return final_preds
