@@ -1,22 +1,16 @@
 import pickle
 import numpy as np
+import pandas as pd
 import os.path as path
-import time
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.inspection import permutation_importance
 from flask import Flask, render_template, request, jsonify
-
-print('run')
-s = time.time()
 from pipeline_components import Stage1Classifier, Stage2Classifier
-e = time.time()
-print('done', e-s)
 
 
-model = pickle.load(open(path.abspath(r'..\deliverables\model_v2.vas'), 'rb')) # load model
+model = pickle.load(open(path.abspath(r'..\deliverables\model_v3.mdl'), 'rb')) # load model
 X, y = pickle.load(open(path.abspath(r'..\artifacts\test_data.pkl'), 'rb')) # load data
-result = permutation_importance(model, X, y, scoring='accuracy')
-
+#result = permutation_importance(model, X, y, scoring='accuracy')
 
 app = Flask(__name__) # flask instance
 
@@ -25,28 +19,30 @@ app = Flask(__name__) # flask instance
 def home():
     return render_template('index.html', **locals())
 
-# royute for predict
-@app.route('/api/predict', methods=['GET', 'POST'])
-def api_data():
-    if request.method == 'POST':
-        data = request.get_json()  # Get JSON data from the request
-        return jsonify({"message": "Data received", "data": data})
-    return jsonify({"message": "Send a POST request with JSON data"})
+# route for predict
 
+@app.route('/predict', methods=['GET', 'POST'])
 def predict():
-    if request.form['PROSPECTID'] is not None:
-        result = model.predict(X[request.form['PROSPECTID']])
+    result = "Invalid input"
+    dropdown_value = request.form.get(key='dropdown')
+    if dropdown_value == '1':
+        prospect_id = request.form.get('PROSPECTID')
+        try:
+            prospect_id = int(prospect_id)
+            result = 'P' + str(model.predict(X.loc[prospect_id].to_frame().T)[0] + 1)        
+        except:
+            result = 'invalid prospect_id'
         return render_template('index.html', **locals())
-    X1 = request.form['Total_TL']
-    X2 = request.form['Tot_Closed_TL']
-    X3 = request.form['Tot_Active_TL']
-    X4 = request.form['Total_TL_opened_L6M']
-    X5 = request.form['Tot_TL_closed_L6M']
-    
-    result = model.predict([[X1, X2, X3, X4, X5]])[0]
-    return render_template('index.html', **locals(), prediction_text='Approved_Flag: {}'.format(result))    
+    else:
+        record = []
+        try:
+            for i in range(1, 40):
+                record.append(request.form)
+            result = model.predict([record])
+        except:
+            result = 'invalid customer record'  
+        return render_template('index.html', **locals())
 
 # Step 5: Run the Flask app
 if __name__ == '__main__':
     app.run(debug=True)
-

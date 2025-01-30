@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Credit Risk Checker</title>
+</head>
+<body>
+    <h1>Welcome to Credit Risk Checker project.</h1>
+    <p>This tool will help you identify customer credit risk class. </p>
+    <p style="font-size: 1.2em; font-weight: bold;">Customer Credit Risk Class: <span id="result">{{result}}</span></p>
+
+    <form action="/predict" method="post">
+        <select id="dropdown" name="dropdown" onchange="updateForm()">
+            <option value="0">Select option</option>
+            <option value="1">Customer ID</option>
+            <option value="2">Customer Record</option>
+        </select>
+        <button type="submit" id="submitButton" disabled>Submit</button>   
+        <div id="inputContainer"></div>
+    </form>
+
+    <script>
+        function updateForm() {
+            const dropdown = document.getElementById('dropdown');
+            const inputContainer = document.getElementById('inputContainer');
+            const resultSpan = document.getElementById('result');
+            const submitButton = document.getElementById('submitButton');
+            inputContainer.innerHTML = ''; // Clear previous inputs
+            resultSpan.textContent = ''; // Clear the previous prediction
+
+            if (dropdown.value == '0') {
+                submitButton.disabled = true;
+            } else {
+                submitButton.disabled = false;
+            }
+
+            if (dropdown.value == '1') {
+                const label = document.createElement('label');
+                label.setAttribute('for', 'PROSPECTID');
+                label.textContent = 'PROSPECTID:';
+                const input = document.createElement('input');
+                input.type = 'text';
+                input.id = 'PROSPECTID';
+                input.name = 'PROSPECTID';
+                input.placeholder = '1 to 51329';
+                inputContainer.appendChild(label);
+                inputContainer.appendChild(input);
+            } else if (dropdown.value == '2') {
+                for (let i = 1; i <= 40; i++) {
+                    const label = document.createElement('label');
+                    label.setAttribute('for', 'input' + i);
+                    label.textContent = 'Input ' + i + ':';
+                    const input = document.createElement('input');
+                    input.type = 'text';
+                    input.id = 'input' + i;
+                    input.name = 'input' + i;
+                    input.placeholder = 'Input ' + i;
+                    inputContainer.appendChild(label);
+                    inputContainer.appendChild(input);
+                    inputContainer.appendChild(document.createElement('br'));
+                }
+            }
+        }
+
+        function resetResult() {
+            const resultSpan = document.getElementById('result');
+            resultSpan.textContent = ''; // Clear the result when the page is reloaded
+        }
+    </script>
+
+</body>
+</html>
