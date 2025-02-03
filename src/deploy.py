@@ -54,9 +54,9 @@ def predict():
         try:
             prospect_id = int(prospect_id)
             result = f'P{single_predict(X.loc[prospect_id])}'
+            input_data = X.loc[prospect_id][feature_imp_list].to_dict()
         except:
             result = 'invalid customer_id'
-        print('result: ', result)
         return render_template('index.html', **locals(), 
                                feature_imp_list=feature_imp_list, 
                                feature_range=feature_range, 
@@ -72,6 +72,7 @@ def predict():
                 elif feature_value != "":
                     temp[feature] = feature_value
             result = f'P{single_predict(temp)}'
+            input_data = temp[feature_imp_list].to_dict()
         except:
             result = 'invalid customer record'  
         return render_template('index.html',

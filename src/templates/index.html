@@ -1,29 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Credit Risk Checker</title>
 </head>
+
 <body>
     <h1>Welcome to Credit Risk Checker project.</h1>
     <p>This tool will help you identify customer credit risk class. </p>
     <p style="font-size: 1.2em; font-weight: bold;">Customer Credit Risk Class: <span id="result">{{result}}</span></p>
-    <p> PROSPECTID: <span id="PROSPECTID">{{PROSPECTID}}</span> </p>
+    <p style="font-size: 1.2em; font-weight: bold;">Customer Record: <span id="input_data">{{input_data}}</span></p>
 
-    <form action="/predict" method="post">
+    <form id="creditRiskForm" action="/predict" method="post">
         <select id="dropdown" name="dropdown" onchange="updateForm()">
             <option value="0">Select option</option>
             <option value="1">Customer ID</option>
             <option value="2">Customer Record</option>
         </select>
-        <button type="submit" id="submitButton" disabled>Submit</button>   
+        <button type="submit" id="submitButton" onclick="return showInputValues()" action="/predict" disabled>Submit</button>
         <div id="inputContainer"></div>
-    </form>
+        <div id="submittedData"></div>  <!-- To show form values -->
 
-    <h2>Submitted Data</h2>
-    <p><strong>PROSPECTID:</strong> <span id="displayPROSPECTID"></span></p>
-    <div id="submittedData"></div>  <!-- To show other form values -->
+    </form>
 
     <script>
         function updateForm() {
@@ -31,18 +31,20 @@
             const inputContainer = document.getElementById('inputContainer');
             const resultSpan = document.getElementById('result');
             const submitButton = document.getElementById('submitButton');
-            inputContainer.innerHTML = ''; // Clear previous inputs
-            resultSpan.textContent = ''; // Clear the previous prediction
+            const features = {{ feature_imp_list|tojson|default("[]") }};
+            const featureRange = {{ feature_range|tojson }} || {};
+            const featureDtype = {{ feature_dtype|tojson }} || {};
+
+            inputContainer.innerHTML = '';
+            resultSpan.textContent = '';
             
-                if (dropdown.value == '0') {
-                    submitButton.disabled = true;
-                } else {
-                    submitButton.disabled = false;
-                }
+            if (dropdown.value == '0') {
+                submitButton.disabled = true;
+            } else {
+                submitButton.disabled = false;
+            }
 
             if (dropdown.value == '1') {
-                console.log("1: ", dropdown.value)
-
                 const label = document.createElement('label');
                 label.setAttribute('for', 'PROSPECTID');
                 label.textContent = 'PROSPECTID:';
@@ -54,11 +56,9 @@
                 inputContainer.appendChild(label);
                 inputContainer.appendChild(input);
             } else if (dropdown.value == '2') {
-                const features = {{ feature_imp_list|tojson|default("[]") }};
-                const featureRange = {{ feature_range|tojson }} || {};
-                const featureDtype = {{ feature_dtype|tojson }} || {};
-                
+              
                 for (const feature of features) {
+
                     const label = document.createElement('label');
                     label.setAttribute('for', feature);
                     label.textContent = feature + ':';
@@ -85,10 +85,33 @@
             }
         }
 
-        function resetResult() {
-            const resultSpan = document.getElementById('result');
-            resultSpan.textContent = ''; // Clear the result when the page is reloaded
+        function showInputValues() {
+            console.log("showInputValues() was called!");
+            const formElements = document.getElementById('creditRiskForm').elements;
+            let outputHTML = '';
+            
+            const dropdown = formElements['dropdown'];
+            const features = {{ feature_imp_list|tojson|safe }};
+            
+            if (dropdown.value === '1') {
+                const input = formElements['PROSPECTID'];
+                if (input) {
+                    outputHTML += `<strong>PROSPECTID:</strong> ${input.value} <br>`;
+                }
+            } else if (dropdown.value === '2') {
+                for (const feature of features) {
+                    const input = formElements[feature];
+                    if (input) {
+                        outputHTML += `<strong>${feature}:</strong> ${input.value} <br>`;
+                    }
+                }
+            }
+        
+            document.getElementById("submittedData").innerHTML = outputHTML;
+            // Let the form submission continue naturally
+            return true;
         }
+
     </script>
 
 </body>
