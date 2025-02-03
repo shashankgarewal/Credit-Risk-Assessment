@@ -9,6 +9,7 @@
     <h1>Welcome to Credit Risk Checker project.</h1>
     <p>This tool will help you identify customer credit risk class. </p>
     <p style="font-size: 1.2em; font-weight: bold;">Customer Credit Risk Class: <span id="result">{{result}}</span></p>
+    <p> PROSPECTID: <span id="PROSPECTID">{{PROSPECTID}}</span> </p>
 
     <form action="/predict" method="post">
         <select id="dropdown" name="dropdown" onchange="updateForm()">
@@ -20,6 +21,10 @@
         <div id="inputContainer"></div>
     </form>
 
+    <h2>Submitted Data</h2>
+    <p><strong>PROSPECTID:</strong> <span id="displayPROSPECTID"></span></p>
+    <div id="submittedData"></div>  <!-- To show other form values -->
+
     <script>
         function updateForm() {
             const dropdown = document.getElementById('dropdown');
@@ -28,14 +33,16 @@
             const submitButton = document.getElementById('submitButton');
             inputContainer.innerHTML = ''; // Clear previous inputs
             resultSpan.textContent = ''; // Clear the previous prediction
-
-            if (dropdown.value == '0') {
-                submitButton.disabled = true;
-            } else {
-                submitButton.disabled = false;
-            }
+            
+                if (dropdown.value == '0') {
+                    submitButton.disabled = true;
+                } else {
+                    submitButton.disabled = false;
+                }
 
             if (dropdown.value == '1') {
+                console.log("1: ", dropdown.value)
+
                 const label = document.createElement('label');
                 label.setAttribute('for', 'PROSPECTID');
                 label.textContent = 'PROSPECTID:';
@@ -47,15 +54,30 @@
                 inputContainer.appendChild(label);
                 inputContainer.appendChild(input);
             } else if (dropdown.value == '2') {
-                for (let i = 1; i <= 40; i++) {
+                const features = {{ feature_imp_list|tojson|default("[]") }};
+                const featureRange = {{ feature_range|tojson }} || {};
+                const featureDtype = {{ feature_dtype|tojson }} || {};
+                
+                for (const feature of features) {
                     const label = document.createElement('label');
-                    label.setAttribute('for', 'input' + i);
-                    label.textContent = 'Input ' + i + ':';
+                    label.setAttribute('for', feature);
+                    label.textContent = feature + ':';
                     const input = document.createElement('input');
-                    input.type = 'text';
-                    input.id = 'input' + i;
-                    input.name = 'input' + i;
-                    input.placeholder = 'Input ' + i;
+                    if (featureDtype[feature].startsWith("int")) {
+                        input.type = "number";
+                        input.step = "1"; // Forces integer values
+                    } else if (featureDtype[feature].startsWith("float")) {
+                        input.type = "number";
+                        input.step = "any"; 
+                    } else if (featureDtype[feature] === "bool") {
+                        input.type = 'radio'
+                    } else {
+                        input.type = "text";
+                        console.log(`The ${feature} feature has an incompatible dtype, i.e., ${featureDtype[feature]}`);
+                    }
+                    input.id = feature;
+                    input.name = feature;
+                    input.placeholder = featureRange[feature] || '';
                     inputContainer.appendChild(label);
                     inputContainer.appendChild(input);
                     inputContainer.appendChild(document.createElement('br'));
