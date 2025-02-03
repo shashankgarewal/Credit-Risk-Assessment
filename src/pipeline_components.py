@@ -76,11 +76,11 @@ class Stage2Classifier(BaseEstimator, ClassifierMixin):
             preds_p1_p3 = self.p1_p3_model.predict(X[y_group_preds_bool])
             final_preds[y_group_preds_bool] = np.where(np.isin(preds_p1_p3, 0), 0, 2) # P1 was 0, P3 was 1
         except:
-            print('no record of p1_p3 class')
+            pass
         try:
             preds_p2_p4 = self.p2_p4_model.predict(X[~y_group_preds_bool])
             final_preds[~y_group_preds_bool] = np.where(np.isin(preds_p2_p4, 0), 1, 3) # P2 was 0, P4 was 1
         except:
-            print('no record of p2_p4 class')
+            pass
         
         return final_preds
