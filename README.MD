@@ -45,6 +45,8 @@ Follow these steps to run the pre-trained model and system on a local machine:
     ```
     http://127.0.0.1:5000
     ```
+### Screenshot:
+![credit-risk-classification-webapp](image.png)
 
 ### Exploration:
 In addition to building the credit risk assessment system, I observed that the accuracy of credit risk classification significantly degrades when credit score metrics formulated by CIBIL agencies are not used in the modeling process.
@@ -67,6 +69,6 @@ Feel free to fork this repository, make improvements, and submit a pull request.
 This project is licensed under the MIT License. See the `LICENSE` file for more details.
 
 ### Author:
-- [LinkedIn] (https://www.linkedin.com/in/shashankgarewal/)
-- [Kaggle] (https://www.kaggle.com/shashankgarewal)
-- [Email] (mailto:shashankgarewal4+gitproject@gmail.com)
+- [LinkedIn](https://www.linkedin.com/in/shashankgarewal/)
+- [Kaggle](https://www.kaggle.com/shashankgarewal)
+- [Email](mailto:shashankgarewal4+gitproject@gmail.com)
