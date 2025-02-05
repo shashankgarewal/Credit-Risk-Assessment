@@ -7,3 +7,5 @@ dataset/cibil_data.xlsx
 dataset/bank_data.xlsx
 
 src/__pycache__
+
+.vscode
