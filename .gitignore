@@ -5,3 +5,5 @@ artifacts/full_data.pkl
 dataset/cibil_data.xlsx
 
 dataset/bank_data.xlsx
+
+src/__pycache__
