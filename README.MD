@@ -22,7 +22,7 @@ The processed data in `artifacts` can be used to train models and evaluate perfo
 The dataset can also be found on Kaggle: [Leading Indian Bank and CIBIL Real World Dataset](https://www.kaggle.com/datasets/saurabhbadole/leading-indian-bank-and-cibil-real-world-dataset)
 
 ### Usage:
-Follow these steps to run the pre-trained model and system on a local machine:
+Follow these steps to run the webapp on your local machine:
 1. Clone the repository:
     ```bash
     git clone https://github.com/shashankgarewal/credit-risk-checker.git
@@ -49,9 +49,12 @@ Follow these steps to run the pre-trained model and system on a local machine:
 ![credit-risk-classification-webapp](image.png)
 
 ### Exploration:
-In addition to building the credit risk assessment system, I observed that the accuracy of credit risk classification significantly degrades when credit score metrics formulated by CIBIL agencies are not used in the modeling process.
+In addition to building the credit risk assessment system, following expermental analysis and modeling were conducted:
+- In [`explore1`](src/explore1_model.ipynb) notebook, it was oberserved the accuracy of credit risk classification significantly degrades when credit score metrics formulated by CIBIL agencies are not used in the modeling process.
 
-Interestingly, in another exploration, I attempted to formulate the credit score using the available credit records. The regression model's performance was surprisingly good, achieving an R² score of over 0.9, despite the notable degradation in credit risk classification when using this score metric.
+- In [`explore2`](src/explore2_model.ipynb) notebook, an attempted to formulate the credit score using the available credit records is made. The regression model's performance was surprisingly good, achieving an R² score of over 0.9, despite the notable degradation in credit risk classification when using this score metric.
+
+- Desipte the good performance of 0.9 R² score, the formulate credit score was used for credit risk classification in [`explore3`](src/explore3_model.ipynb) which didn't revealed good credit risk classification.
 
 ### Next Steps:
 - Implement dynamic model versioning for each training session.
@@ -69,6 +72,6 @@ Feel free to fork this repository, make improvements, and submit a pull request.
 This project is licensed under the MIT License. See the `LICENSE` file for more details.
 
 ### Author:
-- [LinkedIn](https://www.linkedin.com/in/shashankgarewal/)
+- [LinkedIn](https://www.linkedin.com/in/shashankgarewal)
 - [Kaggle](https://www.kaggle.com/shashankgarewal)
 - [Email](mailto:shashankgarewal4+gitproject@gmail.com)
